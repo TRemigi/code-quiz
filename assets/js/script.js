@@ -3,9 +3,10 @@ var choiceListEl = document.getElementById("btn-list");
 var startBtnEl = document.getElementById("start");
 var pageEl = document.querySelector("body");
 var instructionsEl = document.getElementById("instructions-text");
+var timerEl = document.getElementById("timer-span");
+var feedbackTextEl = document.getElementById("alert-text");
 
-var questionsObj = [
-    {
+var questionsObj = [{
         question: "Commonly used data types DO NOT include:",
         choices: ["1. strings", "2. booleans", "3. alerts", "4. numbers"],
         answer: "3. alerts"
@@ -34,7 +35,7 @@ var questionsObj = [
 
 console.log(questionEl);
 
-var questionHandler = function() {
+var questionHandler = function () {
 
     instructionsEl.remove();
     startBtnEl.remove();
@@ -46,24 +47,49 @@ var questionHandler = function() {
 
         // run function to create and append answer buttons
         choicesHandler(questionSet);
+        
 
+        // check for correct answer upon click 
+        // answerBtnEl.addEventListener("click", answerChecker);       
     }
 }
 
-var choicesHandler = function(questionSet) {
+var choicesHandler = function (questionSet) {
 
-    for (i =0; i < questionsObj[i].choices.length; i++) {
+    for (i = 0; i < questionsObj[i].choices.length; i++) {
 
         var answerListItemEl = document.createElement("li");
-        answerListItemEl.className="btn-li";
+        answerListItemEl.className = "btn-li";
         var answerBtnEl = document.createElement("button");
-        answerBtnEl.textContent = questionSet.choices[i];
+        answerBtnEl.className = "answer-btn";
+        var choiceContent = questionSet.choices[i]; 
+        answerBtnEl.textContent = choiceContent;
+        // check to see if choice has same value as answer
+        if (choiceContent === questionSet.answer) {
+            answerBtnEl.setAttribute("data-check", "correct");
+        }
+        else {
+            answerBtnEl.setAttribute("data-check", "incorrect");
+        }
         // append button to list item and list item to list
         answerListItemEl.appendChild(answerBtnEl);
         choiceListEl.appendChild(answerListItemEl);
     }
+    choiceListEl.addEventListener("click", answerChecker);
 }
 
+var answerChecker = function (event) {
+    var targetEl = event.target;
+    var dataCheckValue = targetEl.getAttribute("data-check");
+    console.log(dataCheckValue);
+    if (dataCheckValue !== "correct") {
+        // parseInt(timerEl);
+        // timerEl = timerEl - 10;
+        feedbackTextEl.textContent = "Incorrect!";
+    }
+    else {
+        feedbackTextEl.textContent = "Correct!";
+    }
+};
+
 startBtnEl.addEventListener("click", questionHandler);
-
-

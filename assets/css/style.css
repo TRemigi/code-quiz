@@ -66,10 +66,26 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    width: 780px;
 }
 
 .button-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    align-items: stretch;
     list-style: none;
+    width: 200px;
+}
+
+.button-list li {
+    flex: 100%;
+}
+
+.answer-btn {
+    width: 100%;
+    text-align: left;
 }
 
 main button {
@@ -83,4 +99,14 @@ main button {
 
 main button:hover {
     background-color: #D395EF;
+}
+
+#alert-text-container {
+    flex: 100%;
+    text-align: center;
+    padding: 20px 50px;
+}
+
+#alert-text {
+    
 }

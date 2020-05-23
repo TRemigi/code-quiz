@@ -3,7 +3,9 @@ var choiceListEl = document.getElementById("btn-list");
 var startBtnEl = document.getElementById("start");
 var pageEl = document.querySelector("body");
 var instructionsEl = document.getElementById("instructions-text");
+var timerCount = 75;
 var timerEl = document.getElementById("timer-span");
+timerEl = timerCount;
 var feedbackTextEl = document.getElementById("alert-text");
 
 var questionsObj = [{
@@ -33,63 +35,64 @@ var questionsObj = [{
     }
 ];
 
-console.log(questionEl);
-
+console.log(questionsObj.length);
 var questionHandler = function () {
-
+    timerEl.textContent = timerCount;
     instructionsEl.remove();
     startBtnEl.remove();
 
+    console.log(questionsObj.length);
+
     for (i = 0; i < questionsObj.length; i++) {
+
         var userQuestion = questionsObj[i].question;
         questionEl.textContent = userQuestion;
-        var questionSet = questionsObj[i];
-
+        var objectSet = i;
         // run function to create and append answer buttons
-        choicesHandler(questionSet);
-        
-
-        // check for correct answer upon click 
-        // answerBtnEl.addEventListener("click", answerChecker);       
+        choicesHandler(objectSet);
+        console.log(questionSet);
     }
-}
+};
 
-var choicesHandler = function (questionSet) {
+// funtion to create and append answer buttons
+var choicesHandler = function (objectSet) {
 
-    for (i = 0; i < questionsObj[i].choices.length; i++) {
+    for (j = 0; j < 4; j++) {
 
         var answerListItemEl = document.createElement("li");
         answerListItemEl.className = "btn-li";
         var answerBtnEl = document.createElement("button");
         answerBtnEl.className = "answer-btn";
-        var choiceContent = questionSet.choices[i]; 
+        var choiceContent = questionsObj[objectSet].choices[j];
         answerBtnEl.textContent = choiceContent;
         // check to see if choice has same value as answer
-        if (choiceContent === questionSet.answer) {
+        if (choiceContent === questionsObj[objectSet].answer) {
             answerBtnEl.setAttribute("data-check", "correct");
-        }
-        else {
+        } else {
             answerBtnEl.setAttribute("data-check", "incorrect");
         }
         // append button to list item and list item to list
         answerListItemEl.appendChild(answerBtnEl);
         choiceListEl.appendChild(answerListItemEl);
+        debugger;
     }
-    choiceListEl.addEventListener("click", answerChecker);
-}
+    return;
+};
 
 var answerChecker = function (event) {
     var targetEl = event.target;
-    var dataCheckValue = targetEl.getAttribute("data-check");
-    console.log(dataCheckValue);
-    if (dataCheckValue !== "correct") {
-        // parseInt(timerEl);
-        // timerEl = timerEl - 10;
-        feedbackTextEl.textContent = "Incorrect!";
+    if (targetEl.id !== "start") {
+        var dataCheckValue = targetEl.getAttribute("data-check");
+        console.log(dataCheckValue);
+        if (dataCheckValue !== "correct") {
+            timerCount = timerCount - 10;
+            feedbackTextEl.textContent = "Incorrect!";
+        } else {
+            feedbackTextEl.textContent = "Correct!";
+        }
     }
-    else {
-        feedbackTextEl.textContent = "Correct!";
-    }
+    return
 };
 
 startBtnEl.addEventListener("click", questionHandler);
+choiceListEl.addEventListener("click", answerChecker);

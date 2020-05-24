@@ -372,6 +372,7 @@ var timerStart = function () {
 
     function timer() {
         if (questionSet === 5) {
+            timerEl.textContent = timerCount;
             clearInterval(timerRun);
         } else {
 
@@ -384,7 +385,6 @@ var timerStart = function () {
             }
 
             if (timerCount === 0) {
-                debugger;
                 clearInterval(timerRun);
                 endGame();
             }

@@ -188,3 +188,63 @@ main button:hover {
 #back-button {
     margin-right: 12px;
 }
+
+/* media queries */
+@media screen and (max-width: 740px) {
+    main {
+        padding: 5px 30px;
+    }
+
+    .main-text {
+        font-size: 30px;
+    }
+
+    #instructions-text  {
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .answer-btn, #score-message {
+        font-size: 20px;
+    }
+
+    #input-label, #initials-input, #form-submit, #clear-button, #back-button {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    #text-wrap {
+        padding: 20px 5px;
+    }
+
+    .main-text {
+        font-size: 22px;
+        padding-bottom: 5px;
+    }
+
+    #instructions-text  {
+        font-size: 18px;
+        font-weight: lighter;
+    }
+    #high-scores, #timer, #timer-span  {
+        font-size: 18px;
+    }
+    .score-form {
+        flex-wrap: wrap;
+    }
+
+    #initials-input {
+        width: 188.8px;
+    }
+
+    #form-submit {
+        flex: 100%;
+        width: 100%;
+    }
+
+    #score-list {
+        padding: 0;
+    }
+}

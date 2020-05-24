@@ -9,10 +9,11 @@ var textWrapperEl = document.getElementById("text-wrap");
 var timerCount = 75;
 var timerEl = document.getElementById("timer-span");
 timerEl.textContent = timerCount;
+var timerDisplayEl = document.getElementById("timer");
 var feedbackTextEl = document.getElementById("alert-text");
 var questionSet = -1;
 
-var highScores = [];
+var highScoresArr = [];
 
 var questionsObj = [{
         question: "Commonly used data types DO NOT include:",
@@ -45,8 +46,8 @@ var questionHandler = function () {
 
     if (questionSet === -1) {
         timerEl.textContent = timerCount;
-        instructionsEl.remove();
-        startBtnEl.remove();
+        instructionsEl.style.display = "none";
+        startBtnEl.style.display = "none";
         var listContainerEl = document.getElementById("btn-list-container");
         listContainerEl.style.justifyContent = "flex-start";
     }
@@ -157,6 +158,7 @@ var endGame = function () {
     // let user know quiz is over and display score
     questionEl.textContent = "All done!";
     var scoreDisplayEl = document.createElement("h2");
+    scoreDisplayEl.id = "score-message";
     scoreDisplayEl.textContent = "Your final Score is " + timerCount + ".";
     scoreDisplayEl.className = "second-text";
     scoreDisplayEl.style.textAlign = "left";
@@ -220,32 +222,149 @@ var saveScore = function (event) {
             score: userScore
         };
 
+        if (!highScoresArr) {
+            highScoresArr = [];
+        }
+
         // send new object to highScores Array
-        highScores.push(userScoreObj);
+        highScoresArr.push(userScoreObj);
+        console.log(highScoresArr);
 
         // save highScores array to localStorage
-        localStorage.setItem("highScores", JSON.stringify(highScores));
-        
+        localStorage.setItem("highScores", JSON.stringify(highScoresArr));
+
         loadScores();
+        displayScores();
     }
 };
 
-var loadScores = function(event) {
+var loadScores = function (event) {
+    highScoresArr = localStorage.getItem("highScores");
 
-    highScores = localStorage.getItem("highScores");
+    highScoresArr = JSON.parse(highScoresArr);
 
-    if (!highScores) {
+    if (highScoresArr) {
+        // sort array by score
+        var compare = function (a, b) {
+            const scoreA = a.score;
+            const scoreB = b.score;
+
+            var comparison = 0;
+            if (scoreA > scoreB) {
+                comparison = -1;
+            } else if (scoreA < scoreB) {
+                comparison = 1;
+            }
+            return comparison;
+        }
+
+        highScoresArr.sort(compare);
+
+    }
+    console.log(highScoresArr);
+}
+
+var displayScores = function () {
+    if (!highScoresArr) {
         window.alert("There are no high scores yet!");
         return;
     }
 
-    // remove elements on page except main text and button-list
+    var hasForm = document.getElementById("form-wrapper");
+    var hasStart = document.getElementById("start");
 
-    highScores = JSON.parse(highScores);
-    console.log(highScores);
-    // take parsed data and iterate, creatinig list items
+    // check if coming from form submit
+    if (hasForm) {
+        var scoreFormWrapper = document.getElementById("form-wrapper");
+        var scoreDisplayEl = document.getElementById("score-message");
+        scoreDisplayEl.remove();
+        while (scoreFormWrapper.hasChildNodes()) {
+            scoreFormWrapper.removeChild(scoreFormWrapper.firstChild);
+        }
+        scoreFormWrapper.remove();
+        var feedbackTextEl = document.getElementById("feedback-text");
+        feedbackTextEl.remove();
+    }
+
+    // check if coming from vewScores click
+    if (hasStart) {
+        var startButtonEl = document.getElementById("start");
+        startButtonEl.remove();
+        var instructionsEl = document.getElementById("instructions-text");
+        instructionsEl.remove();
+    }
+
+    // remove button list container and alert container
+    var buttonListEl = document.getElementById("btn-list-container");
+    buttonListEl.remove();
+    var alertContainerEl = document.getElementById("alert-text-container");
+    alertContainerEl.remove();
+
+
+    // change main text
+    questionEl.textContent = "High Scores";
+    mainEl.style.justifyContent = "flex-start";
+
+    writeScores();
+
+    // create back and clear buttons
+    var buttonDivEl = document.createElement("div");
+    buttonDivEl.id = "scores-buttons-container";
+    var backButtonEl = document.createElement("button")
+    backButtonEl.id = "back-button";
+    backButtonEl.className = "score-buttons";
+    backButtonEl.textContent = "Go back";
+    var clearButtonEl = document.createElement("button");
+    clearButtonEl.id = "clear-button";
+    clearButtonEl.className = "score-buttons";
+    clearButtonEl.textContent = "Clear High Scores";
+    buttonDivEl.appendChild(backButtonEl);
+    buttonDivEl.appendChild(clearButtonEl);
+    mainEl.appendChild(buttonDivEl);
+
+    // hide viewScores button and timer
+    viewScoresEl.style.display = "none";
+    timerDisplayEl.style.display = "none";
+
+
+    clearButtonEl.addEventListener("click", clearScores);
+    backButtonEl.addEventListener("click", reset);
 }
 
+var clearScores = function (event) {
+    localStorage.clear();
+    var scoreListWrapperEl = document.getElementById("score-list-wrapper");
+    console.log(scoreListWrapperEl);
+    while (scoreListWrapperEl.hasChildNodes()) {
+        scoreListWrapperEl.removeChild(scoreListWrapperEl.firstChild);
+    }
+    scoreListWrapperEl.remove();
+}
+
+var writeScores = function () {
+    var scoreListWrapperEl = document.createElement("div");
+    scoreListWrapperEl.id = "score-list-wrapper";
+    var scoreListEl = document.createElement("ul");
+    scoreListEl.id = "score-list";
+
+    for (i = 0; i < highScoresArr.length; i++) {
+        var userInitials = highScoresArr[i].name;
+        var userScore = highScoresArr[i].score;
+        var scoreListItemEl = document.createElement("li");
+        scoreListItemEl.id = "score-list-item";
+        var scoreEntryNumber = i + 1;
+        scoreListItemEl.textContent = scoreEntryNumber + ". " + userInitials + " - " + userScore;
+        scoreListEl.appendChild(scoreListItemEl);
+    }
+    scoreListWrapperEl.appendChild(scoreListEl);
+    mainEl.appendChild(scoreListWrapperEl);
+}
+
+var reset = function () {
+    
+}
+
+loadScores();
 startBtnEl.addEventListener("click", questionHandler);
 choiceListEl.addEventListener("click", answerChecker);
-viewScoresEl.addEventListener("click", loadScores);
+viewScoresEl.addEventListener("click", displayScores);

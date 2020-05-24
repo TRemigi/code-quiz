@@ -50,6 +50,7 @@ var questionHandler = function () {
         startBtnEl.style.display = "none";
         var listContainerEl = document.getElementById("btn-list-container");
         listContainerEl.style.justifyContent = "flex-start";
+        timerStart();
     }
 
     questionSet++;
@@ -107,7 +108,6 @@ var answerChecker = function (event) {
         //check for incorrect answer and subtract time
         if (dataCheckValue !== "correct") {
             timerCount = timerCount - 10;
-            timerEl.textContent = timerCount;
 
             // check for and remove old feedback
             // var feedback1 = document.querySelector("#alert-text-container");
@@ -283,7 +283,9 @@ var displayScores = function () {
         }
         scoreFormWrapper.remove();
         var feedbackTextEl = document.getElementById("feedback-text");
-        feedbackTextEl.remove();
+        if (feedbackTextEl) {
+            feedbackTextEl.remove();
+        }
     }
 
     // check if coming from vewScores click
@@ -360,9 +362,35 @@ var writeScores = function () {
     mainEl.appendChild(scoreListWrapperEl);
 }
 
-var reset = function () {
-    
+var reset = function (event) {
+    window.location.reload();
 }
+
+var timerStart = function () {
+
+    var timerRun = setInterval(timer, 1000);
+
+    function timer() {
+        if (questionSet === 5) {
+            clearInterval(timerRun);
+        } else {
+
+            timerCount--;
+            timerEl.textContent = timerCount;
+
+            if (timerCount < 0) {
+                timerCount = 0;
+                clearInterval(timerRun);
+            }
+
+            if (timerCount === 0) {
+                debugger;
+                clearInterval(timerRun);
+                endGame();
+            }
+        }
+    }
+};
 
 loadScores();
 startBtnEl.addEventListener("click", questionHandler);

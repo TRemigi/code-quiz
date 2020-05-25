@@ -103,7 +103,11 @@ var answerChecker = function (event) {
         var dataCheckValue = targetEl.getAttribute("data-check");
         //check for incorrect answer and subtract time
         if (dataCheckValue !== "correct") {
+            debugger;
             timerCount = timerCount - 10;
+            if (timerCount < 0) {
+                timerCount = 0;
+            }
             // check for and remove old feedback
             var feedback1 = document.querySelector("#feedback-text");
             var feedback2 = document.querySelector("#alert-text-container");
@@ -147,6 +151,7 @@ var endGame = function () {
     }
     // let user know quiz is over and display score
     questionEl.textContent = "All done!";
+    timerCheck(timerCount);
     var scoreDisplayEl = document.createElement("h2");
     scoreDisplayEl.id = "score-message";
     scoreDisplayEl.textContent = "Your final Score is " + timerCount + ".";
@@ -235,7 +240,6 @@ var loadScores = function (event) {
         var compare = function (a, b) {
             const scoreA = a.score;
             const scoreB = b.score;
-
             var comparison = 0;
             if (scoreA > scoreB) {
                 comparison = -1;
@@ -364,6 +368,13 @@ var timerStart = function () {
                 endGame();
             }
         }
+    }
+};
+
+// function to keep score from going below zero
+var timerCheck = function (timerCount) {
+    if (timerCount < 0) {
+        timerCount = 0;
     }
 };
 

@@ -57,6 +57,7 @@ var questionHandler = function () {
     // if there are more question sets left, then set next question text
     if (questionSet < 5) {
         var userQuestion = questionsObj[questionSet].question;
+        mainEl.style.justifyContent = "flex-start";
         questionEl.textContent = userQuestion;
         questionEl.style.textAlign = "left";
         // run function to create and append answer buttons
@@ -103,11 +104,8 @@ var answerChecker = function (event) {
         var dataCheckValue = targetEl.getAttribute("data-check");
         //check for incorrect answer and subtract time
         if (dataCheckValue !== "correct") {
-            debugger;
             timerCount = timerCount - 10;
-            if (timerCount < 0) {
-                timerCount = 0;
-            }
+            timerCheck();
             // check for and remove old feedback
             var feedback1 = document.querySelector("#feedback-text");
             var feedback2 = document.querySelector("#alert-text-container");
@@ -151,6 +149,7 @@ var endGame = function () {
     }
     // let user know quiz is over and display score
     questionEl.textContent = "All done!";
+    questionEl.style.paddingLeft = "0";
     timerCheck(timerCount);
     var scoreDisplayEl = document.createElement("h2");
     scoreDisplayEl.id = "score-message";

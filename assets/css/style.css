@@ -24,6 +24,10 @@ header {
     color: #D395EF;
 }
 
+#high-scores:hover {
+    text-decoration: underline;
+}
+
 #timer, #timer-span {
     font-size: 24px;
     color: black;
@@ -201,6 +205,10 @@ main button:hover {
 
     #instructions-text  {
         font-size: 18px;
+    }
+
+    .answer-btn:hover {
+        background-color: #351C75;
     }
 }
 
